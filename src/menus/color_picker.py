@@ -3,11 +3,11 @@ from customtkinter import *
 
 
 class CTkColorPicker(CTkFrame):
-    def __init__(self, master, app):
+    def __init__(self, master, app, start=(127, 127, 127)):
         self.master = master
         self.app    = app
         self.running = True
-        super(CTkColorPicker, self).__init__(master=self.master, width=400, corner_radius=0)
+        super(CTkColorPicker, self).__init__(master=self.master, width=400, corner_radius=0, fg_color='gray7')
 
         self.hex_lv_var = StringVar()
         self.rgb_lv_var = StringVar()
@@ -27,6 +27,11 @@ class CTkColorPicker(CTkFrame):
         self.slider_b.place(x=30, y=75)
         self.slider_b.configure(command=self.update_liveview)
 
+        print(start)
+        self.slider_r.set(int(start[0]))
+        self.slider_g.set(int(start[1]))
+        self.slider_b.set(int(start[2]))
+
         self.button = CTkButton(self, text='OK', corner_radius=0, command=self.button_action)
         self.button.place(x=60, y=110)
 
@@ -35,6 +40,8 @@ class CTkColorPicker(CTkFrame):
 
         self.rgb_lv = CTkEntry(self, width=100, height=20, corner_radius=0, textvariable=self.rgb_lv_var)
         self.rgb_lv.place(x=289, y=105)
+
+        self.rgbtuple = ()
 
         self.update_liveview(self)
 
@@ -56,6 +63,7 @@ class CTkColorPicker(CTkFrame):
         self.g = self.slider_g.get()
         self.b = self.slider_b.get()
         self.rgb = f"{int(self.r)}, {int(self.g)}, {int(self.b)}"
+        self.rgbtuple = (self.r, self.g, self.b)
         self.hex = self.rgb2hex(r=int(self.r), g=int(self.g), b=int(self.b))
 
         self.rgb_lv_var.set(self.rgb)
@@ -68,6 +76,8 @@ class CTkColorPicker(CTkFrame):
 
     def check_lvs(self):
         while self.running != False:
+            if self.running == False:
+                pass
             if self.hex_lv_var.get() != self.hex:
                 try:
                     self.hex_data = self.hex_lv_var.get()
@@ -79,6 +89,7 @@ class CTkColorPicker(CTkFrame):
 
                     self.liveview.configure(fg_color=self.hex_data)
                     self.rgb = f'{self.new_rgb[0]}, {self.new_rgb[1]}, {self.new_rgb[2]}'
+                    self.rgbtuple = (self.new_rgb[0], self.new_rgb[1], self.new_rgb[2])
                     self.hex = self.hex_data
                     self.rgb_lv_var.set(f'{self.new_rgb[0]}, {self.new_rgb[1]}, {self.new_rgb[2]}')
                 except Exception as e:
@@ -95,6 +106,7 @@ class CTkColorPicker(CTkFrame):
 
                     self.liveview.configure(fg_color=self.hex_data)
                     self.rgb = f'{self.new_rgb[0]},{self.new_rgb[1]},{self.new_rgb[2]}'
+                    self.rgbtuple = (self.new_rgb[0], self.new_rgb[1], self.new_rgb[2])
                     self.hex = self.hex_data
                     self.hex_lv_var.set(f'{self.hex_data}')
                 except Exception as e:
@@ -106,21 +118,22 @@ class CTkColorPicker(CTkFrame):
         self.app.destroy()
 
 
-def color_picker():
+def color_picker(startval):
     def on_close():
         colorpicker.stop()
         app.quit()
         app.destroy()
 
-    app = CTkToplevel()
+    app = CTkToplevel(fg_color='gray7')
     app.geometry('400x170')
     app.resizable(False, False)
     app.protocol('WM_DELETE_WINDOW', on_close)
     app.title('Color Picker')
+    app.wm_attributes("-type", "dock")
 
-    colorpicker = CTkColorPicker(master=app, app=app)
+    colorpicker = CTkColorPicker(master=app, app=app, start=startval)
     colorpicker.pack()
 
     app.mainloop()
 
-    return [f'{colorpicker.rgb}', f'{colorpicker.hex}']
+    return [colorpicker.rgbtuple, f'{colorpicker.hex}']
