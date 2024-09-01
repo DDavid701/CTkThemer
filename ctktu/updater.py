@@ -1,9 +1,9 @@
+import os
 import threading
 import io
 import zipfile
 import requests
 import shutil
-from file_structure import File_Structure
 from customtkinter import *
 from PIL import Image
 logoimg = CTkImage(dark_image=Image.open('/home/davidd/PycharmProjects/CTkT/src/imgs/logo.png'), size=(64, 64))
@@ -34,10 +34,12 @@ def start_update(url, progress, win):
             file_list = zip_ref.namelist()
             total_files = len(file_list)
             for i, file in enumerate(file_list):
-                zip_ref.extract(file, "latest")
+                zip_ref.extract(file, "/home/davidd/PycharmProjects/CTkT/ctktu/latest")
                 progress.set((i + 1) / total_files)
                 win.update_idletasks()
 
+        try: shutil.rmtree('/home/davidd/PycharmProjects/CTkT/ctktu/files')
+        except Exception as e: print('Couldnt remove files!' + str(e))
         os.mkdir('/home/davidd/PycharmProjects/CTkT/ctktu/files')
 
         shutil.move('/home/davidd/PycharmProjects/CTkT/src', '/home/davidd/PycharmProjects/CTkT/ctktu/files')
@@ -56,11 +58,16 @@ def start_update(url, progress, win):
         shutil.move('/home/davidd/PycharmProjects/CTkT/ctktu/latest/CTkThemer-master/credits.py', '/home/davidd/PycharmProjects/CTkT')
         shutil.move('/home/davidd/PycharmProjects/CTkT/ctktu/latest/CTkThemer-master/settings', '/home/davidd/PycharmProjects/CTkT')
 
+        shutil.rmtree('/home/davidd/PycharmProjects/CTkT/ctktu/latest/CTkThemer-master')
+
+        win.destroy()
+        quit()
+
     else:
         print("Download failed")
 
 
-def window():
+def window(ver):
     win = CTk()
     win.title('Updating CTkThemer...')
     win.attributes('-type', 'dock')
@@ -69,7 +76,7 @@ def window():
     logo = CTkLabel(win, text='', image=logoimg)
     logo.place(x=163, y=40)
 
-    label = CTkLabel(win, text='Updating', anchor='center', justify='center', font=('System', 16, 'normal'))
+    label = CTkLabel(win, text=f'Installing v{ver}', anchor='center', justify='center', font=('System', 16, 'normal'))
     label.place(x=160, y=140)
 
     progressbar = CTkProgressBar(win, width=230, corner_radius=3)
@@ -80,6 +87,3 @@ def window():
     download_thread.start()
 
     win.mainloop()
-
-if __name__ == '__main__':
-    window()

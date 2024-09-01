@@ -1,6 +1,5 @@
-from itertools import count
-
 import requests
+from ctktu.updater import window
 from os import getenv
 from dotenv import load_dotenv
 
@@ -62,3 +61,5 @@ def get_ver():
         pass
     else:
         print(f"You're version is outdated! [{cont}] is out! Your on {version}")
+        print('Now updating...')
+        window(cont)

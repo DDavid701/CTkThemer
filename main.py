@@ -5,7 +5,7 @@ import time
 import webbrowser
 from customtkinter import *
 from editor import launch
-from get_cl import get_changes
+from get_cl import get_changes, get_ver
 from src.ctkthemer.elements import settings_switch_option_display, settings_optionmenu_option_display
 from PIL import ImageTk, Image
 from init import version
@@ -14,6 +14,8 @@ import src.scripts.open_project
 import src.popup.project_not_compatible as notcompatible
 import src.popup.project_file_wrongformat as wrongformat
 import dotctkt
+
+get_ver()
 
 compatibility       = [ '1.00' ]
 loaded_projects     = []
