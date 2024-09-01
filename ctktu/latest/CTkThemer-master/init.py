@@ -1,6 +1,6 @@
 from os import getenv
 from dotenv import load_dotenv
-load_dotenv('src/app.env')
+load_dotenv('src/.env')
 
 version = getenv('VERSION')
 author  = getenv('AUTHOR')

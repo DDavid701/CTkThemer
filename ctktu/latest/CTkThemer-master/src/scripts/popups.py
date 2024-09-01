@@ -3,7 +3,7 @@ from PIL import Image
 from clipboard import copy
 
 class ErrorPopup(CTkToplevel):
-    def __init__(self, error, full_error, syn=None):
+    def __init__(self, error, syn, full_error):
         super(ErrorPopup, self).__init__()
 
         self.fullerror = full_error
@@ -29,9 +29,6 @@ class ErrorPopup(CTkToplevel):
 
         self.button_two = CTkButton(self, text='OK', font=CTkFont(family='Roboto', weight='normal', size=12), corner_radius=0, fg_color='gray16', hover_color='gray22', command=self.destroy)
         self.button_two.place(x=151, y=150)
-
-        if syn == None:
-            self.synt.place_forget()
 
     def save(self):
         copy(self.fullerror)

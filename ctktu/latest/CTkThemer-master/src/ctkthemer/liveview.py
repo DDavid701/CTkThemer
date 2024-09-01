@@ -62,29 +62,16 @@ class Liveview(CTkFrame):
         self.Segmentedbutton.place(x=10, y=485)
 
         # CTkTextbox
-        self.FontMac = CTkLabel(self, text="MacOS", font=CTkFont(family="Roboto", size=14))
-        self.FontMac.place(x=250, y=135)
-
-        self.FontWin = CTkLabel(self, text="Windows", font=CTkFont(family="Roboto", size=14))
-        self.FontWin.place(x=250, y=170)
-
-        self.FontLin = CTkLabel(self, text="Linux", font=CTkFont(family="Roboto", size=14))
-        self.FontLin.place(x=250, y=205)
+        self.Textbox = CTkTextbox(self, width=96, height=96)
+        self.Textbox.place(x=180, y=250)
 
     def change_appearance(self):
-
-        Widgets = [self.Frame, self.Button, self.Entry, self.Label, self.Checkbox, self.Switch, self.Radiobutton, self.Progressbar, self.Slider, self.Optionmenu, self.Combobox, self.Scrollbar, self.Segmentedbutton, self.Combobox._dropdown_menu, self.Optionmenu._dropdown_menu, self.FontMac, self.FontWin, self.FontLin]
-
         if self.appearance == 'Dark':
             self._set_appearance_mode('Light')
-            for widget in Widgets:
-                widget._set_appearance_mode('Light')
             self.appearance = 'Light'
             self.update()
         elif self.appearance == 'Light':
             self._set_appearance_mode('Dark')
-            for widget in Widgets:
-                widget._set_appearance_mode('Dark')
             self.appearance = 'Dark'
             self.update()
         else:

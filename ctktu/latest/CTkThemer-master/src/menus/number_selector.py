@@ -2,9 +2,8 @@ from customtkinter import *
 
 callback = None
 
-def number_selector(start, max, start_at, liveview, lvtype, othertype=None):
+def number_selector(start, max, start_at, liveview):
     num = None
-    print(f"OTHERTYPE={othertype}")
 
     def on_close():
         global num
@@ -20,24 +19,7 @@ def number_selector(start, max, start_at, liveview, lvtype, othertype=None):
 
     def return_number():
         curnum = number.get()
-        print(liveview)
-        if othertype == None:
-            if lvtype == "radius":
-                liveview.configure(corner_radius=int(curnum))
-            elif lvtype == "border":
-                liveview.configure(border_width=int(curnum))
-            elif lvtype == "text":
-                liveview.configure(font=('System', int(curnum)))
-        else:
-            if othertype == "border_width_checked":
-                liveview.configure(border_width_checked=int(curnum))
-            elif othertype == "border_width_unchecked":
-                liveview.configure(border_width_unchecked=int(curnum))
-            elif othertype == "button_length":
-                liveview.configure(button_length=int(curnum))
-            elif othertype == "button_corner_radius":
-                liveview.configure(button_corner_radius=int(curnum))
-
+        liveview.Frame.configure(corner_radius=int(curnum))
         selector.quit()
         selector.destroy()
 

@@ -6,7 +6,6 @@ from src.ctkthemer.designs import *
 from src.ctkthemer.liveview import Liveview as LV
 from src.templates.manage import load_template
 import discordrpc
-from credits import open_credits
 from PIL import ImageTk
 from platform import system
 PLATFORM = system()
@@ -23,34 +22,28 @@ print(f'RPC lul: {settings[0]}')
 use_rpc = settings[0]
 print(f'RPC: {use_rpc}')
 
-try:
-    rpc = discordrpc.RPC(app_id=1261015521013530696)
-    rpc.set_activity(
-        state='In the Main Menu',
-        small_image="logo",
-    )
-except Exception:
-    use_rpc = 'False'
-    print("Couldn't connect to discord.")
-    pass
+def rpc_manager():
+    global rpc, use_rpc
+    try:
+        rpc = discordrpc.RPC(app_id=1261015521013530696)
+        rpc.set_activity(
+            state='In the Main Menu',
+            small_image="logo",
+        )
+    except Exception:
+        use_rpc = 'False'
+        print("Couldn't connect to discord.")
+        pass
 
-if use_rpc == True:
-    rpc.run()
+if use_rpc == 'True':
+    rpc_manager()
 
-WINDOW_TITLE = ('CTkThemer')
+WINDOW_TITLE = 'CTkThemer - None'
 WINDOW_RESIZE = True, True
 WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 640
 
 def launch(projname, projdata, filename):
-    if use_rpc == True:
-        rpc.disconnect()
-        rpc.set_activity(
-            state=f'working on {projname}',
-            small_image="logo",
-        )
-        rpc.run()
-
     offset = (0,0)
     print(f'following data is given: {projdata}')
 
@@ -463,7 +456,7 @@ def launch(projname, projdata, filename):
     app.protocol('WM_TAKE_FOCUS', un_minimize)
 
 
-    logo = CTkButton(titlebar, text='', image=CTkImage(dark_image=Image.open('src/imgs/logo.png'), size=(28,28)), width=40, height=40, corner_radius=0, fg_color='gray6', hover_color='gray8', command=open_credits)
+    logo = CTkButton(titlebar, text='', image=CTkImage(dark_image=Image.open('src/imgs/logo.png'), size=(28,28)), width=40, height=40, corner_radius=0, fg_color='gray6', hover_color='gray8')
     logo.place(x=0, y=0)
 
     save_button = CTkButton(titlebar, text='', image=CTkImage(dark_image=Image.open('src/icons/titlebar/save.png'), size=(18, 20)), width=40, height=40, corner_radius=0, fg_color='gray6', hover_color='gray8', command=save_project)
@@ -488,72 +481,65 @@ def launch(projname, projdata, filename):
     sidebar._scrollbar.configure(corner_radius=1000, width=16, button_color='gray24', button_hover_color='gray20')
     sidebar.place(x=0, y=40)
 
-    def scroll_up(none):
-        cur = sidebar._parent_canvas.yview()
-        print(f"cur_up: {cur}")
-        sidebar._parent_canvas.yview_moveto(cur[0] + 0.02)
-
-    def scroll_down(none):
-        cur = sidebar._parent_canvas.yview()
-        print(f"cur_down: {cur}")
-        sidebar._parent_canvas.yview_moveto(cur[0] - 0.02)
-
-    sidebar._scrollbar.bind('<Button-5>', scroll_up)
-    sidebar._scrollbar.bind('<Button-4>', scroll_down)
+    if use_rpc == True:
+        rpc.set_activity(
+            state=f'working on {projname}',
+            small_image="logo",
+        )
 
     Liveview = LV(master=app)
     Liveview.place(x=327, y=50)
 
-    CTkDesign = design_CTk(master=sidebar, fgcolor=(data_CTk[0], data_CTk[1]), LV=Liveview)
+    CTkDesign = design_CTk(master=sidebar, fgcolor=(data_CTk[0], data_CTk[1]))
     CTkDesign.pack(fill='both', pady=0)
 
-    CTkFrameDesign = design_CTkFrame(master=sidebar, cornerradius=data_CTkFrame[0], borderwidth=data_CTkFrame[1], fgcolor=data_CTkFrame[2], bordercolor=data_CTkFrame[3], LV=Liveview.Frame)
+    CTkFrameDesign = design_CTkFrame(master=sidebar, cornerradius=data_CTkFrame[0], borderwidth=data_CTkFrame[1], fgcolor=data_CTkFrame[2], bordercolor=data_CTkFrame[3], LV=Liveview)
     CTkFrameDesign.pack(fill='both', pady=0)
 
-    CTkButtonDesign = design_CTkButton(master=sidebar, cornerradius=data_CTkButton[0], borderwidth=data_CTkButton[1], fgcolor=data_CTkButton[2], hovercolor=data_CTkButton[3], bordercolor=data_CTkButton[4], textcolor=data_CTkButton[5], LV=Liveview.Button)
+    CTkButtonDesign = design_CTkButton(master=sidebar, cornerradius=data_CTkButton[0], borderwidth=data_CTkButton[1], fgcolor=data_CTkButton[2], hovercolor=data_CTkButton[3], bordercolor=data_CTkButton[4], textcolor=data_CTkButton[5])
     CTkButtonDesign.pack(fill='both', pady=0)
 
-    CTkLabelDesign = design_CTkLabel(master=sidebar, cornerradius=data_CTkLabel[0], textcolor=data_CTkLabel[1], LV=Liveview.Label)
+    CTkLabelDesign = design_CTkLabel(master=sidebar, cornerradius=data_CTkLabel[0], textcolor=data_CTkLabel[1])
     CTkLabelDesign.pack(fill='both', pady=0)
 
-    CTkEntryDesign = design_CTkEntry(master=sidebar, LV=Liveview.Entry, cornerradius=data_CTkEntry[0], borderwidth=data_CTkEntry[1], fgcolor=data_CTkEntry[2], ptextcolor=data_CTkEntry[3], bordercolor=data_CTkEntry[4], textcolor=data_CTkEntry[5])
+    CTkEntryDesign = design_CTkEntry(master=sidebar, cornerradius=data_CTkEntry[0], borderwidth=data_CTkEntry[1], fgcolor=data_CTkEntry[2], ptextcolor=data_CTkEntry[3], bordercolor=data_CTkEntry[4], textcolor=data_CTkEntry[5])
     CTkEntryDesign.pack(fill='both', pady=0)
 
-    CTkCheckBoxDesign = design_CTkCheckBox(master=sidebar, LV=Liveview.Checkbox, cornerradius=data_CTkCheckBox[0], borderwidth=data_CTkCheckBox[1], fgcolor=data_CTkCheckBox[2], bordercolor=data_CTkCheckBox[3], hovercolor=data_CTkCheckBox[4], checkcolor=data_CTkCheckBox[5], textcolor=data_CTkCheckBox[6])
+    CTkCheckBoxDesign = design_CTkCheckBox(master=sidebar, cornerradius=data_CTkCheckBox[0], borderwidth=data_CTkCheckBox[1], fgcolor=data_CTkCheckBox[2], bordercolor=data_CTkCheckBox[3], hovercolor=data_CTkCheckBox[4], checkcolor=data_CTkCheckBox[5], textcolor=data_CTkCheckBox[6])
     CTkCheckBoxDesign.pack(fill='both', pady=0)
 
-    CTkSwitchDesign = design_CTkSwitch(master=sidebar, LV=Liveview.Switch, cornerradius=data_CTkSwitch[0], borderwidth=data_CTkSwitch[1], buttonlength=data_CTkSwitch[2], fgcolor=data_CTkSwitch[3], progresscolor=data_CTkSwitch[4], buttoncolor=data_CTkSwitch[5], buttonhovercolor=data_CTkSwitch[6], textcolor=data_CTkSwitch[7])
+    CTkSwitchDesign = design_CTkSwitch(master=sidebar, cornerradius=data_CTkSwitch[0], borderwidth=data_CTkSwitch[1], buttonlength=data_CTkSwitch[2], fgcolor=data_CTkSwitch[3], progresscolor=data_CTkSwitch[4], buttoncolor=data_CTkSwitch[5], buttonhovercolor=data_CTkSwitch[6], textcolor=data_CTkSwitch[7])
     CTkSwitchDesign.pack(fill='both', pady=0)
 
-    CTkRadioButtonDesign = design_CTkRadioButton(master=sidebar, LV=Liveview.Radiobutton, cornerradius=data_CTkRadioButton[0], borderwidthchecked=data_CTkRadioButton[1], borderwidthunchecked=data_CTkRadioButton[2], fgcolor=data_CTkRadioButton[3], bordercolor=data_CTkRadioButton[4], hovercolor=data_CTkRadioButton[5], textcolor=data_CTkRadioButton[6])
+    CTkRadioButtonDesign = design_CTkRadioButton(master=sidebar, cornerradius=data_CTkRadioButton[0], borderwidthchecked=data_CTkRadioButton[1], borderwidthunchecked=data_CTkRadioButton[2], fgcolor=data_CTkRadioButton[3], bordercolor=data_CTkRadioButton[4], hovercolor=data_CTkRadioButton[5], textcolor=data_CTkRadioButton[6])
     CTkRadioButtonDesign.pack(fill='both', pady=0)
 
-    CTkProgressBarDesign = design_CTkProgressBar(master=sidebar, LV=Liveview.Progressbar, cornerradius=data_CTkProgressBar[0], borderwidth=data_CTkProgressBar[1], fgcolor=data_CTkProgressBar[2], progresscolor=data_CTkProgressBar[3], bordercolor=data_CTkProgressBar[4])
+    CTkProgressBarDesign = design_CTkProgressBar(master=sidebar, cornerradius=data_CTkProgressBar[0], borderwidth=data_CTkProgressBar[1], fgcolor=data_CTkProgressBar[2], progresscolor=data_CTkProgressBar[3], bordercolor=data_CTkProgressBar[4])
     CTkProgressBarDesign.pack(fill='both', pady=0)
 
-    CTkSliderDesign = design_CTkSlider(master=sidebar, LV=Liveview.Slider, cornerradius=data_CTkSlider[0], buttoncornerradius=data_CTkSlider[1], borderwidth=data_CTkSlider[2], buttonlength=data_CTkSlider[3], fgcolor=data_CTkSlider[4], progresscolor=data_CTkSlider[5], buttoncolor=data_CTkSlider[6], buttonhovercolor=data_CTkSlider[7])
+    CTkSliderDesign = design_CTkSlider(master=sidebar, cornerradius=data_CTkSlider[0], buttoncornerradius=data_CTkSlider[1], borderwidth=data_CTkSlider[2], buttonlength=data_CTkSlider[3], fgcolor=data_CTkSlider[4], progresscolor=data_CTkSlider[5], buttoncolor=data_CTkSlider[6], buttonhovercolor=data_CTkSlider[7])
     CTkSliderDesign.pack(fill='both', pady=0)
 
-    CTkOptionMenuDesign = design_CTkOptionMenu(master=sidebar, LV=Liveview.Optionmenu, cornerradius=data_CTkOptionMenu[0], fgcolor=data_CTkOptionMenu[1], buttoncolor=data_CTkOptionMenu[2], buttonhovercolor=data_CTkOptionMenu[3], textcolor=data_CTkOptionMenu[4])
+    CTkOptionMenuDesign = design_CTkOptionMenu(master=sidebar, cornerradius=data_CTkOptionMenu[0], fgcolor=data_CTkOptionMenu[1], buttoncolor=data_CTkOptionMenu[2], buttonhovercolor=data_CTkOptionMenu[3], textcolor=data_CTkOptionMenu[4])
     CTkOptionMenuDesign.pack(fill='both', pady=0)
 
-    CTkComboBoxDesign = design_CTkComboBox(master=sidebar, LV=Liveview.Combobox, cornerradius=data_CTkComboBox[0], borderwidth=data_CTkComboBox[1], fgcolor=data_CTkComboBox[2], bordercolor=data_CTkComboBox[3], buttoncolor=data_CTkComboBox[4], buttonhovercolor=data_CTkComboBox[5], textcolor=data_CTkComboBox[6])
+    CTkComboBoxDesign = design_CTkComboBox(master=sidebar, cornerradius=data_CTkComboBox[0], borderwidth=data_CTkComboBox[1], fgcolor=data_CTkComboBox[2], bordercolor=data_CTkComboBox[3], buttoncolor=data_CTkComboBox[4], buttonhovercolor=data_CTkComboBox[5], textcolor=data_CTkComboBox[6])
     CTkComboBoxDesign.pack(fill='both', pady=0)
 
-    CTkScrollbarDesign = design_CTkScrollbar(master=sidebar, LV=Liveview.Scrollbar, cornerradius=data_CTkScrollbar[0], borderspacing=data_CTkScrollbar[1], buttoncolor=data_CTkScrollbar[2], buttonhovercolor=data_CTkScrollbar[3])
+    CTkScrollbarDesign = design_CTkScrollbar(master=sidebar, cornerradius=data_CTkScrollbar[0], borderspacing=data_CTkScrollbar[1], buttoncolor=data_CTkScrollbar[2], buttonhovercolor=data_CTkScrollbar[3])
     CTkScrollbarDesign.pack(fill='both', pady=0)
 
-    CTkSegmentedButtonDesign = design_CTkSegmentedButton(master=sidebar, LV=Liveview.Segmentedbutton, cornerradius=data_CTkSegmentedButton[0], borderwidth=data_CTkSegmentedButton[1], fgcolor=data_CTkSegmentedButton[2], selectedcolor=data_CTkSegmentedButton[3], selectedhovercolor=data_CTkSegmentedButton[4], unselectedcolor=data_CTkSegmentedButton[5], unselectedhovercolor=data_CTkSegmentedButton[6], textcolor=data_CTkSegmentedButton[7])
+    CTkSegmentedButtonDesign = design_CTkSegmentedButton(master=sidebar, cornerradius=data_CTkSegmentedButton[0], borderwidth=data_CTkSegmentedButton[1], fgcolor=data_CTkSegmentedButton[2], selectedcolor=data_CTkSegmentedButton[3], selectedhovercolor=data_CTkSegmentedButton[4], unselectedcolor=data_CTkSegmentedButton[5], unselectedhovercolor=data_CTkSegmentedButton[6], textcolor=data_CTkSegmentedButton[7])
     CTkSegmentedButtonDesign.pack(fill='both', pady=0)
 
-    DropdownMenuDesign = design_DropdownMenu(master=sidebar, LV=[Liveview.Optionmenu._dropdown_menu, Liveview.Combobox._dropdown_menu], fgcolor=data_DropdownMenu[0], hovercolor=data_DropdownMenu[1], textcolor=data_DropdownMenu[2])
+    DropdownMenuDesign = design_DropdownMenu(master=sidebar, fgcolor=data_DropdownMenu[0], hovercolor=data_DropdownMenu[1], textcolor=data_DropdownMenu[2])
     DropdownMenuDesign.pack(fill='both', pady=0)
 
     FontDesign = design_CTkFont(master=sidebar,
-                                size_mac=int(MacOS_Data[1]), weight_mac=MacOS_Data[2], LVMac=Liveview.FontMac,
-                                size_win=int(Windows_Data[1]), weight_win=Windows_Data[2], LVWin=Liveview.FontWin,
-                                size_lin=int(Linux_Data[1]), weight_lin=Linux_Data[2], LVLin=Liveview.FontLin,
-    )
+                                size_mac=int(MacOS_Data[1]), weight_mac=MacOS_Data[2],
+                                size_win=int(Windows_Data[1]), weight_win=Windows_Data[2],
+                                size_lin=int(Linux_Data[1]), weight_lin=Linux_Data[2],
+                                )
     FontDesign.pack(fill='both', pady=0)
 
     app.mainloop()

@@ -2,13 +2,10 @@ import os
 import json
 import threading
 import time
-import webbrowser
 from customtkinter import *
 from editor import launch
-from get_cl import get_changes
 from src.ctkthemer.elements import settings_switch_option_display, settings_optionmenu_option_display
 from PIL import ImageTk, Image
-from init import version
 import src.menus.create_project
 import src.scripts.open_project
 import src.popup.project_not_compatible as notcompatible
@@ -31,7 +28,6 @@ WINDOW_WIDTH = 1000
 WINDOW_HEIGHT = 600
 CURRENT_BUTTON = 'Projects'
 
-Github_Img = CTkImage(dark_image=Image.open('src/icons/mm_changelog/github.png'), size=(16,16))
 
 def get_projects():
     global loaded_projects
@@ -276,39 +272,30 @@ app.resizable(WINDOW_RESIZE[0], WINDOW_RESIZE[1])
 sidebar = CTkFrame(app, width=250, height=WINDOW_HEIGHT, corner_radius=0)
 sidebar.place(x=0, y=0)
 
-versframe = CTkFrame(sidebar, fg_color='gray16', width=250, height=25, corner_radius=0)
-versframe.place(x=0, y=WINDOW_HEIGHT-24)
-
-
-def github_action():
-    webbrowser.open(f'https://github.com/DDavid701/CTkThemer/')
-
-githubbutton = CTkButton(versframe, text="", width=24, height=26, image=Github_Img, fg_color='gray16', hover_color='gray13', corner_radius=0, command=github_action)
-githubbutton.place(x=226, y=0)
-
-version_label = CTkLabel(versframe, text=f"CTkT v{version}", text_color='gray42')
-version_label.place(x=3, y=-1)
-
 tabview = CTkTabview(app, fg_color='gray10', corner_radius=0, width=750, height=WINDOW_HEIGHT+36)
 
-logo = CTkImage(dark_image=Image.open('src/imgs/logo.png'), size=(64, 64))
+logo = CTkImage(dark_image=Image.open('src/imgs/banner.png'), size=(236, 68))
 sb_logo = CTkLabel(sidebar, text='', image=logo)
-sb_logo.place(x=83, y=5)
+sb_logo.place(x=0, y=0)
 
 # Sidebar (Action_Buttons)
 projects_button = Action_Button(master=sidebar, text='Projects', tab='Projects', icon='src/icons/mm_tabbuttons/project.png', tabview=tabview)
 projects_button.place(x=0, y=80)
 
+themes_button = Action_Button(master=sidebar, text='Themes', tab='Themes', icon='src/icons/mm_tabbuttons/project.png', tabview=tabview)
+themes_button.place(x=0, y=130)
+
 settings_button = Action_Button(master=sidebar, text='Settings', tab='Settings', icon='src/icons/mm_tabbuttons/project.png', tabview=tabview)
 settings_button.place(x=0, y=180)
 
 changelog_button = Action_Button(master=sidebar, text='Changelog', tab='Changelog', icon='src/icons/mm_tabbuttons/project.png', tabview=tabview)
-changelog_button.place(x=0, y=130)
+changelog_button.place(x=0, y=230)
 
-action_buttons = [projects_button, settings_button, changelog_button]
+action_buttons = [projects_button, themes_button, settings_button, changelog_button]
 
 # Tabs
 tabview.add('Projects')
+tabview.add('Themes')
 tabview.add('Settings')
 tabview.add('Changelog')
 
@@ -337,16 +324,6 @@ def use_createproject():
 def open_projectfolder():
     os.system('dolphin /home/davidd/PycharmProjects/CTkThemer/ctkt_projects')
 
-def scroll_up(none):
-    cur = scrollarea_changelog._parent_canvas.yview()
-    print(f"cur_up: {cur}")
-    scrollarea_changelog._parent_canvas.yview_moveto(cur[0] + 0.02)
-
-def scroll_down(none):
-    cur = scrollarea_changelog._parent_canvas.yview()
-    print(f"cur_down: {cur}")
-    scrollarea_changelog._parent_canvas.yview_moveto(cur[0] - 0.02)
-
 # Projects Buttons
 create_project_button = CTkButton(master=buttonframe, width=70, height=44, corner_radius=0, fg_color='gray13', font=CTkFont(family='Noto Sans', size=15, weight="normal"), hover_color='gray15', text='New', image=CTkImage(dark_image=Image.open('src/icons/mm_projects_tab/create_project.png'), size=(12,14)), command=use_createproject)
 create_project_button.place(x=88, y=0)
@@ -368,9 +345,6 @@ scrollarea_changelog.place(x=0, y=0)
 scrollarea_Settings = CTkScrollableFrame(tabview.tab('Settings'), width=735, height=600, fg_color='gray10', corner_radius=0)
 scrollarea_Settings.place(x=0, y=0)
 
-scrollarea_changelog._scrollbar.bind('<Button-5>', scroll_up)
-scrollarea_changelog._scrollbar.bind('<Button-4>', scroll_down)
-
 # Settings [Options]
 with open('settings', 'r') as f:
     settings = f.readlines()
@@ -385,5 +359,4 @@ test4_settingsoption = settings_switch_option_display(scrollarea_Settings, text=
 
 projects_button.execute()
 get_projects()
-get_changes(scrollarea_changelog)
 app.mainloop()

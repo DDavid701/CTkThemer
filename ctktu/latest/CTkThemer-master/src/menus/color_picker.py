@@ -76,6 +76,8 @@ class CTkColorPicker(CTkFrame):
 
     def check_lvs(self):
         while self.running != False:
+            if self.running == False:
+                pass
             if self.hex_lv_var.get() != self.hex:
                 try:
                     self.hex_data = self.hex_lv_var.get()
@@ -92,8 +94,6 @@ class CTkColorPicker(CTkFrame):
                     self.rgb_lv_var.set(f'{self.new_rgb[0]}, {self.new_rgb[1]}, {self.new_rgb[2]}')
                 except Exception as e:
                     print(e)
-                if self.running == False:
-                    pass
 
             if self.rgb_lv_var.get() != self.rgb:
                 try:
